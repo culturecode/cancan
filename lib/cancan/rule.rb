@@ -64,7 +64,7 @@ module CanCan
     end
 
     def unmergeable?
-      @conditions.respond_to?(:keys) && (! @conditions.keys.first.kind_of? Symbol)
+      Array.wrap(@conditions.try(:keys)).any? {|key| !key.kind_of?(Symbol) }
     end
 
     def associations_hash(conditions = @conditions)
