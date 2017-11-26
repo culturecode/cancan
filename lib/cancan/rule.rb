@@ -156,7 +156,7 @@ module CanCan
 
     def nested_subject_matches_conditions?(subject_hash)
       parent, child = subject_hash.first
-      matches_conditions_hash?(parent, @conditions[parent.class.name.downcase.to_sym] || {})
+      matches_conditions_hash?(parent, @conditions[parent.model_name.singular.to_sym] || {})
     end
 
     def call_block_with_all(action, subject, attribute)
@@ -168,7 +168,7 @@ module CanCan
     end
 
     def subject_name(subject)
-      subject.class.to_s.underscore.pluralize.to_sym
+      subject.model_name.route_key.to_sym
     end
 
     def model_adapter(subject)
