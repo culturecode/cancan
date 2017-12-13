@@ -168,7 +168,7 @@ module CanCan
     end
 
     def subject_name(subject)
-      subject.model_name.route_key.to_sym
+      subject.respond_to?(:model_name) ? subject.model_name.route_key.to_sym : subject.class.to_s.underscore.pluralize.to_sym
     end
 
     def model_adapter(subject)
