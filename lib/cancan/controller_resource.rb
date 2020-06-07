@@ -63,7 +63,7 @@ module CanCan
       if !parent? && new_actions.include?(@params[:action].to_sym)
         build_resource
       elsif id_param || @options[:singleton]
-        find_and_update_resource
+        assign_attributes? ? find_and_update_resource : find_resource
       end
     end
 
@@ -80,8 +80,25 @@ module CanCan
     end
 
     def build_resource
-      resource = resource_base.new(resource_params || {})
-      assign_attributes(resource)
+      if assign_attributes?
+        resource = resource_base.new(resource_params || {}) # Pass attributes to new instead of after instantiation to init the correct subclass if specified
+        assign_attributes(resource) 
+      else
+        resource = resource_base.new
+      end
+
+      resource
+    end
+
+    def assign_attributes?
+      case @options[:assign_attributes]
+      when nil, true, @params[:action].to_sym
+        true
+      when Array
+        Array.wrap(@options[:assign_attributes]).include?(@params[:action].to_sym)
+      else
+        false
+      end
     end
 
     def assign_attributes(resource)
